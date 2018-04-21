@@ -1238,3 +1238,6 @@ end
     @test step(x) == 0.0
     @test x isa StepRangeLen{Float64,Base.TwicePrecision{Float64},Base.TwicePrecision{Float64}}
 end
+
+@test view(Base.OneTo(10), Base.OneTo(5)) === Base.OneTo(5)
+

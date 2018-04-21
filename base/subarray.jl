@@ -134,6 +134,12 @@ function view(A::AbstractArray, I::Vararg{Any,N}) where {N}
     unsafe_view(_maybe_reshape_parent(A, index_ndims(J...)), J...)
 end
 
+# Ranges tend to be compact & immutable
+function view(r1::AbstractRange, r2::AbstractRange)
+    @_propagate_inbounds_meta
+    getindex(r1, r2)::AbstractRange
+end
+
 function unsafe_view(A::AbstractArray, I::Vararg{ViewIndex,N}) where {N}
     @_inline_meta
     SubArray(A, I)
