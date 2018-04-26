@@ -232,3 +232,7 @@ end
 y = map(v -> (a=v.a, b=v.a + v.b), [(a=1, b=missing), (a=1, b=2)])
 @test y isa Vector{NamedTuple{(:a,:b), T} where T<:Tuple}
 @test isequal(y, [(a=1, b=missing), (a=1, b=3)])
+
+# Iterator constructor
+@test NamedTuple{(:a, :b), Tuple{Int, Float64}}(Any[1.0, 2]) === (a=1, b=2.0)
+@test NamedTuple{(:a, :b)}(Any[1.0, 2]) === (a=1.0, b=2)
