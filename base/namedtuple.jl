@@ -89,7 +89,7 @@ function NamedTuple{names}(nt::NamedTuple) where {names}
     end
 end
 
-NamedTuple{names, T}(itr) where {names, T} = NamedTuple{names, T}(T(itr))
+NamedTuple{names, T}(itr) where {names, T <: Tuple} = NamedTuple{names, T}(T(itr))
 NamedTuple{names}(itr) where {names} = NamedTuple{names}(Tuple(itr))
 
 end # if Base
