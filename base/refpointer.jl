@@ -35,6 +35,15 @@ end
 
 eltype(x::Type{<:Ref{T}}) where {T} = @isdefined(T) ? T : Any
 convert(::Type{Ref{T}}, x::Ref{T}) where {T} = x
+size(x::Ref) = ()
+axes(x::Ref) = ()
+length(x::Ref) = 1
+ndims(x::Ref) = 0
+ndims(::Type{<:Ref}) = 0
+start(::Ref) = false
+next(r::Ref, s) = (r[], true)
+done(r::Ref, s) = s
+IteratorSize(::Type{<:Ref}) = HasShape{0}()
 
 # create Ref objects for general object conversion
 unsafe_convert(::Type{Ref{T}}, x::Ref{T}) where {T} = unsafe_convert(Ptr{T}, x)
