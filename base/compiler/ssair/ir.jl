@@ -713,14 +713,14 @@ function finish(compact::IncrementalCompact)
                 StmtRange(first(bb.stmts), result_idx-1))
     # Perform simple DCE for unused values
     extra_worklist = Int[]
-    for (idx, nused) in Iterators.enumerate(compact.used_ssas)
-        idx >= result_idx && break
-        nused == 0 || continue
-        maybe_erase_unused!(extra_worklist, compact, idx)
-    end
-    while !isempty(extra_worklist)
-        maybe_erase_unused!(extra_worklist, compact, pop!(extra_worklist))
-    end
+    # for (idx, nused) in Iterators.enumerate(compact.used_ssas)
+    #     idx >= result_idx && break
+    #     nused == 0 || continue
+    #     maybe_erase_unused!(extra_worklist, compact, idx)
+    # end
+    # while !isempty(extra_worklist)
+    #     maybe_erase_unused!(extra_worklist, compact, pop!(extra_worklist))
+    # end
     cfg = CFG(compact.result_bbs, Int[first(bb.stmts) for bb in compact.result_bbs[2:end]])
     return IRCode(compact.ir, compact.result, compact.result_types, compact.result_lines, compact.result_flags, cfg, NewNode[])
 end
