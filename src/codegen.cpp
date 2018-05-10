@@ -7235,7 +7235,7 @@ extern "C" void jl_init_llvm(void)
         FeaturesStr = Features.getString();
     }
     // Allocate a target...
-    auto codemodel =
+    Optional<CodeModel::Model> codemodel =
 #ifdef _P64
         // Make sure we are using the large code model on 64bit
         // Let LLVM pick a default suitable for jitting on 32bit
@@ -7243,7 +7243,7 @@ extern "C" void jl_init_llvm(void)
 #elif JL_LLVM_VERSION < 60000
         CodeModel::JITDefault;
 #else
-        CodeModel::Default;
+        None;
 #endif
     auto optlevel =
 #ifdef DISABLE_OPT
