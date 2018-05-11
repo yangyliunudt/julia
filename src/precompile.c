@@ -345,7 +345,7 @@ void *jl_precompile(int all)
     m2 = jl_alloc_vec_any(0);
     for (size_t i = 0; i < jl_array_len(m); i++) {
         jl_method_instance_t *mi = (jl_method_instance_t*)jl_array_ptr_ref(m, i);
-        if (!jl_is_cacheable_sig((jl_tupletype_t*)mi->specTypes, (jl_tupletype_t*)mi->def.method->sig, mi->def.method)) {
+        if (!jl_isa_compileable_sig((jl_tupletype_t*)mi->specTypes, mi->def.method)) {
             mi = jl_get_specialization1((jl_tupletype_t*)mi->specTypes, jl_world_counter);
         }
         else if (mi->max_world != ~(size_t)0) {
