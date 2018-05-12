@@ -567,8 +567,8 @@ static jl_cgval_t emit_sparam(jl_codectx_t &ctx, size_t i);
 static Value *emit_condition(jl_codectx_t &ctx, const jl_cgval_t &condV, const std::string &msg);
 static void allocate_gc_frame(jl_codectx_t &ctx, BasicBlock *b0);
 static void CreateTrap(IRBuilder<> &irbuilder);
-static Value *emit_jlcall(jl_codectx_t &ctx, Value *theFptr, Value *theF,
-                          jl_cgval_t *args, size_t nargs);
+static CallInst *emit_jlcall(jl_codectx_t &ctx, Value *theFptr, Value *theF,
+                             jl_cgval_t *args, size_t nargs);
 
 static Value *literal_pointer_val(jl_codectx_t &ctx, jl_value_t *p);
 static GlobalVariable *prepare_global_in(Module *M, GlobalVariable *G);
@@ -2413,7 +2413,7 @@ static bool emit_builtin_call(jl_codectx_t &ctx, jl_cgval_t *ret, jl_value_t *f,
     return false;
 }
 
-static Value *emit_jlcall(jl_codectx_t &ctx, Value *theFptr, Value *theF,
+static CallInst *emit_jlcall(jl_codectx_t &ctx, Value *theFptr, Value *theF,
                           jl_cgval_t *argv, size_t nargs)
 {
     // emit arguments
@@ -5363,11 +5363,11 @@ static std::pair<std::unique_ptr<Module>, jl_llvm_functions_t>
             }
             if (jl_is_concrete_type(vi.value.typ)) {
                 jl_cgval_t tuple = emit_new_struct(ctx, vi.value.typ, ctx.nvargs, vargs);
-                // FIXME: this may assert since the type of vi might not be isbits here
                 emit_varinfo_assign(ctx, vi, tuple);
-            } else {
-                jl_cgval_t tuple = mark_julia_type(ctx, emit_jlcall(ctx, prepare_call(jltuple_func), maybe_decay_untracked(V_null),
-                    vargs, ctx.nvargs), true, vi.value.typ);
+            }
+            else {
+                restTuple = emit_jlcall(ctx, prepare_call(jltuple_func), maybe_decay_untracked(V_null), vargs, ctx.nvargs);
+                jl_cgval_t tuple = mark_julia_type(ctx, restTuple, true, vi.value.typ);
                 emit_varinfo_assign(ctx, vi, tuple);
             }
         }
