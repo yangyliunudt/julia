@@ -201,6 +201,7 @@ Base.:(∘)
 
 ```@docs
 Core.eval
+Base.MainInclude.eval
 Base.@eval
 Base.evalfile
 Base.esc
