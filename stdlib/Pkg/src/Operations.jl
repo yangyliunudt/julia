@@ -864,7 +864,10 @@ function build_versions(ctx::Context, uuids::Vector{UUID}; might_need_to_resolve
             open(log_file, "w") do log
                 success(pipeline(cmd, stdout=log, stderr=log))
             end ? Base.rm(log_file, force=true) :
-                @error("Error building `$name`; see log file for further info")
+                begin
+                    @error("Error building `$name`; see log file for further info")
+                    print(read(log_file, String))
+                end
         end
         with_dependencies_loadable_at_toplevel(ctx, PackageSpec(name, uuid); might_need_to_resolve=might_need_to_resolve) do
             run_build()
